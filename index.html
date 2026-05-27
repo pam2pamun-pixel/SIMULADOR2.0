@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Práctica Clínica — Don Aurelio Ríos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #f5f2ee;
+      --surface:   #ffffff;
+      --card:      #faf8f5;
+      --border:    #e2dbd2;
+      --accent:    #2d5f8a;
+      --accent2:   #c0392b;
+      --text:      #1a1a1a;
+      --muted:     #6b6560;
+      --patient:   #2d5f8a;
+      --system:    #5a4e3c;
+      --bubble-p:  #eef3f8;
+      --bubble-u:  #2d5f8a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP BAR ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .header-title {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .header-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .badge-live {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px;
+      color: #27ae60;
+      font-weight: 500;
+      background: #eafaf1;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #a9dfbf;
+    }
+    .badge-live::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: #27ae60;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      display: flex;
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 24px 16px;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: sticky;
+      top: 88px;
+    }
+
+    .patient-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .patient-header {
+      background: var(--accent);
+      padding: 20px;
+      text-align: center;
+    }
+    .patient-avatar {
+      width: 72px; height: 72px;
+      margin: 0 auto 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .patient-name {
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      color: white;
+      font-weight: 600;
+    }
+    .patient-age {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 3px;
+    }
+    .patient-body {
+      padding: 16px;
+    }
+    .info-row {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      color: var(--muted);
+      font-weight: 500;
+      min-width: 80px;
+    }
+    .info-value { color: var(--text); }
+
+    .guide-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .guide-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .guide-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .guide-step:last-child { border-bottom: none; }
+    .step-num {
+      width: 20px; height: 20px;
+      background: var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── CHAT ── */
+    .chat-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* API Key setup */
+    #api-setup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+    #api-setup h3 {
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    #api-setup p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .api-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    #api-key-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: border 0.2s;
+    }
+    #api-key-input:focus { border-color: var(--accent); }
+    #api-key-input::placeholder { color: var(--muted); }
+    #save-key-btn {
+      padding: 10px 18px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    #save-key-btn:hover { opacity: 0.85; }
+
+    #chat-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      height: 540px;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+    #messages::-webkit-scrollbar { width: 5px; }
+    #messages::-webkit-scrollbar-track { background: transparent; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeUp 0.25s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .msg.patient .msg-avatar { background: var(--bubble-p); color: var(--accent); }
+    .msg.user .msg-avatar    { background: var(--bubble-u); color: white; }
+    .msg.system-msg .msg-avatar { background: #fef9f0; color: var(--system); }
+
+    .msg-bubble {
+      max-width: 72%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .msg.patient .msg-bubble {
+      background: var(--bubble-p);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user .msg-bubble {
+      background: var(--bubble-u);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.system-msg .msg-bubble {
+      background: #fef9f0;
+      color: var(--system);
+      border: 1px solid #f0e6d3;
+      border-radius: 10px;
+      font-family: 'DM Sans', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      max-width: 90%;
+    }
+
+    .typing-indicator {
+      display: flex; gap: 4px; align-items: center; padding: 4px 0;
+    }
+    .typing-indicator span {
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    /* Input area */
+    .input-area {
+      border-top: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    #user-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: var(--card);
+      color: var(--text);
+      resize: none;
+      outline: none;
+      min-height: 42px;
+      max-height: 120px;
+      transition: border 0.2s;
+      line-height: 1.5;
+    }
+    #user-input:focus { border-color: var(--accent); }
+    #user-input::placeholder { color: var(--muted); }
+
+    #send-btn {
+      width: 42px; height: 42px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+    #send-btn:hover { opacity: 0.85; }
+    #send-btn:active { transform: scale(0.95); }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #send-btn svg { width: 18px; height: 18px; }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      gap: 10px;
+      padding: 40px;
+    }
+    .empty-icon { font-size: 40px; }
+    .empty-title { font-family: 'Lora', serif; font-size: 17px; color: var(--text); }
+    .empty-sub { font-size: 13px; line-height: 1.5; max-width: 280px; }
+
+    .new-session-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .new-session-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── SECCIONES CLÍNICAS ── */
+    .clinical-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    .clinical-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .clinical-section-header:hover { background: var(--border); }
+    .section-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .section-icon.dx  { background: #eef3f8; }
+    .section-icon.rx  { background: #fef3f0; }
+    .section-title-block { flex: 1; }
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .section-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .chevron {
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform 0.25s;
+    }
+    .chevron.open { transform: rotate(180deg); }
+
+    .clinical-section-body {
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeUp 0.2s ease;
+    }
+    .clinical-section-body.open { display: flex; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+    .field-label span {
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .clinical-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      background: var(--card);
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      line-height: 1.6;
+      min-height: 90px;
+      transition: border 0.2s;
+    }
+    .clinical-textarea:focus { border-color: var(--accent); }
+    .clinical-textarea::placeholder { color: #b0a99f; }
+
+    /* Treatment table */
+    .rx-table-wrapper { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+    .rx-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .rx-table thead tr {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .rx-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .rx-table td {
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .rx-table tr:last-child td { border-bottom: none; }
+    .rx-table td input {
+      width: 100%;
+      padding: 9px 12px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+    }
+    .rx-table td input::placeholder { color: #b0a99f; }
+    .rx-table td input:focus { background: #f0f4f8; }
+    .rx-table tr:nth-child(even) td { background: var(--card); }
+
+    .rx-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .btn-add-row {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-add-row:hover { border-color: var(--accent); color: var(--accent); }
+
+    .rx-disclaimer {
+      background: #fff8f0;
+      border: 1px solid #f5dfc0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #8a5c2a;
+      line-height: 1.5;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .rx-disclaimer-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+
+    /* ── RETROALIMENTACIÓN ── */
+    #feedback-section {
+      display: none;
+      animation: fadeUp 0.35s ease;
+    }
+    #feedback-section.visible { display: block; }
+
+    .feedback-locked {
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+    .feedback-locked .lock-icon { font-size: 28px; margin-bottom: 10px; }
+    .feedback-locked .lock-title { font-family: 'Lora', serif; font-size: 15px; color: var(--text); margin-bottom: 6px; }
+    .feedback-locked .lock-list { font-size: 12.5px; line-height: 1.8; }
+    .feedback-locked .lock-list span { display: block; }
+    .lock-check { color: #27ae60; margin-right: 4px; }
+    .lock-pending { color: #e67e22; margin-right: 4px; }
+
+    .feedback-ready {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    .feedback-ready-header {
+      background: linear-gradient(135deg, #1a3f5c 0%, #2d5f8a 100%);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .feedback-ready-header .fb-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .feedback-ready-header .fb-title {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+    }
+    .feedback-ready-header .fb-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+    .feedback-ready-body { padding: 24px; }
+
+    #btn-generate-feedback {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #btn-generate-feedback:hover { opacity: 0.88; }
+    #btn-generate-feedback:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    #feedback-output {
+      display: none;
+      margin-top: 20px;
+    }
+    #feedback-output.visible { display: block; }
+
+    .fb-block {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .fb-block-title {
+      font-family: 'Lora', serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .fb-block p, .fb-block li {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .fb-block ul { padding-left: 18px; }
+    .fb-block ul li { margin-bottom: 4px; }
+    .fb-block.case-summary { background: #f0f4f8; }
+    .fb-block.dx-feedback   { background: #f5f9f5; }
+    .fb-block.rx-feedback   { background: #fff8f0; }
+    .fb-block.guidelines    { background: #faf8f5; }
+    .fb-typing {
+      display: flex; gap: 5px; align-items: center;
+      padding: 16px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .fb-typing span {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .fb-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .fb-typing span:nth-child(3) { animation-delay: 0.4s; }
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 4px;
+      height: 4px;
+      margin-top: 14px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    @media (max-width: 768px) {
+      main { flex-direction: column; padding: 12px; }
+      aside { width: 100%; position: static; }
+      #chat-container { height: 480px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">HC</div>
+    <div>
+      <div class="header-title">Historia Clínica Virtual</div>
+      <div class="header-sub">Práctica formativa · Medicina de pregrado</div>
+    </div>
+  </div>
+  <div class="badge-live">Sesión activa</div>
+</header>
+
+<main>
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="patient-card">
+      <div class="patient-header">
+        <div class="patient-avatar">👴</div>
+        <div class="patient-name">Don Aurelio Ríos</div>
+        <div class="patient-age">84 años · Jubilado</div>
+      </div>
+      <div class="patient-body">
+        <div class="info-row">
+          <span class="info-label">Origen</span>
+          <span class="info-value">Oaxaca, Méx.</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Motivo</span>
+          <span class="info-value">Consulta general</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Estado</span>
+          <span class="info-value">Espera atención</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-title">Guía de la entrevista</div>
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <span>Datos de identificación</span>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <span>Antecedentes heredofamiliares</span>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <span>Antecedentes personales patológicos</span>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <span>Padecimiento actual</span>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <span>Exploración física</span>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">6</div>
+        <span>Laboratorios y gabinete</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <div class="chat-wrapper">
+
+    <!-- CHAT BOX -->
+    <div id="chat-container">
+      <div id="messages">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🩺</div>
+          <div class="empty-title">Sala de consulta lista</div>
+          <div class="empty-sub">Ingresa tu API Key arriba y comienza la entrevista clínica con Don Aurelio.</div>
+        </div>
+      </div>
+      <div class="input-area">
+        <textarea id="user-input" placeholder="Escribe tu pregunta al paciente…" rows="1" disabled
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button id="send-btn" onclick="sendMessage()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="new-session-btn" onclick="newSession()" style="align-self:flex-end;margin-top:10px;">
+      ↺ Nueva sesión
+    </button>
+
+    <!-- ── SECCIÓN: DIAGNÓSTICOS PROBABLES ── -->
+    <div class="clinical-section">
+      <div class="clinical-section-header" onclick="toggleSection('dx-body', 'dx-chevron')">
+        <div class="section-icon dx">🩻</div>
+        <div class="section-title-block">
+          <div class="section-title">5. Diagnósticos probables</div>
+          <div class="section-subtitle">Integración diagnóstica — completar al final de la exploración</div>
+        </div>
+        <span class="chevron" id="dx-chevron">▼</span>
+      </div>
+      <div class="clinical-section-body" id="dx-body">
+        <div class="field-group">
+          <div class="field-label">Diagnóstico(s) probable(s)</div>
+          <textarea class="clinical-textarea" id="dx-answer" placeholder="Escribe aquí tu diagnóstico principal y los diagnósticos diferenciales que consideres pertinentes…" rows="4"></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Justificación clínica <span>— Fundamenta tu respuesta con los hallazgos de la historia clínica, la exploración física y los estudios solicitados</span></div>
+          <textarea class="clinical-textarea" id="dx-justification" placeholder="Explica los datos clínicos, hallazgos de laboratorio y exploración física que sustentan tu diagnóstico. ¿Por qué descartas otras entidades?" rows="6"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN: TRATAMIENTO MÉDICO ── -->
+    <div class="clinical-section">
+      <div class="clinical-section-header" onclick="toggleSection('rx-body', 'rx-chevron')">
+        <div class="section-icon rx">💊</div>
+        <div class="section-title-block">
+          <div class="section-title">6. Plan terapéutico</div>
+          <div class="section-subtitle">Prescripción médica — nombre del compuesto, vía, presentación, dosis, horario y duración</div>
+        </div>
+        <span class="chevron" id="rx-chevron">▼</span>
+      </div>
+      <div class="clinical-section-body" id="rx-body">
+
+        <div class="rx-disclaimer">
+          <span class="rx-disclaimer-icon">⚠️</span>
+          <span><strong>Aviso importante:</strong> Recuerda que este es un ejercicio para estudiantes de medicina. Lo aquí plasmado <strong>no constituye una recomendación ni un tratamiento para un paciente en específico</strong>. El uso de fármacos en pacientes reales debe realizarse bajo supervisión médica y con base en la evaluación clínica individualizada.</span>
+        </div>
+
+        <div class="rx-table-wrapper">
+          <table class="rx-table" id="rx-table">
+            <thead>
+              <tr>
+                <th style="min-width:160px;">Nombre del compuesto</th>
+                <th style="min-width:110px;">Vía de administración</th>
+                <th style="min-width:120px;">Forma de presentación</th>
+                <th style="min-width:100px;">Dosis</th>
+                <th style="min-width:110px;">Horario</th>
+                <th style="min-width:110px;">Duración</th>
+              </tr>
+            </thead>
+            <tbody id="rx-tbody">
+              <tr>
+                <td><input type="text" placeholder="ej. Amlodipino"></td>
+                <td><input type="text" placeholder="ej. Oral"></td>
+                <td><input type="text" placeholder="ej. Tableta 5 mg"></td>
+                <td><input type="text" placeholder="ej. 5 mg"></td>
+                <td><input type="text" placeholder="ej. Cada 24 h"></td>
+                <td><input type="text" placeholder="ej. Indefinido"></td>
+              </tr>
+              <tr>
+                <td><input type="text" placeholder="ej. Ketorolaco"></td>
+                <td><input type="text" placeholder="ej. IV"></td>
+                <td><input type="text" placeholder="ej. Ampolleta 30 mg"></td>
+                <td><input type="text" placeholder="ej. 30 mg"></td>
+                <td><input type="text" placeholder="ej. Cada 8 h"></td>
+                <td><input type="text" placeholder="ej. 5 días"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rx-controls">
+          <button class="btn-add-row" onclick="addRxRow()">+ Agregar fármaco</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ── SECCIÓN 7: RETROALIMENTACIÓN ── -->
+    <div id="feedback-section">
+
+      <!-- Estado: pendiente -->
+      <div class="feedback-locked" id="feedback-locked">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">Retroalimentación no disponible aún</div>
+        <div class="lock-list" id="lock-checklist">
+          <span id="chk-dx"><span class="lock-pending">○</span> Diagnóstico probable</span>
+          <span id="chk-just"><span class="lock-pending">○</span> Justificación clínica (mín. 150 palabras)</span>
+          <span id="chk-rx"><span class="lock-pending">○</span> Al menos un fármaco en el plan terapéutico</span>
+        </div>
+      </div>
+
+      <!-- Estado: lista para generar -->
+      <div class="feedback-ready" id="feedback-ready" style="display:none;">
+        <div class="feedback-ready-header">
+          <div class="fb-icon">📋</div>
+          <div>
+            <div class="fb-title">7. Retroalimentación del caso clínico</div>
+            <div class="fb-sub">Resumen del caso · Evaluación diagnóstica · Guía ACR/VF 2021 para PAN</div>
+          </div>
+        </div>
+        <div class="feedback-ready-body">
+          <button id="btn-generate-feedback" onclick="generateFeedback()">
+            <span>✨</span> Generar retroalimentación con IA
+          </button>
+          <div id="feedback-output">
+            <div id="fb-typing-indicator" class="fb-typing" style="display:none;">
+              <span></span><span></span><span></span>
+              <span style="background:none;width:auto;height:auto;border-radius:0;animation:none;font-size:13px;color:var(--muted);">
+                Analizando el caso clínico…
+              </span>
+            </div>
+            <div id="fb-content"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<script>
+  let conversationHistory = [];
+  let isLoading = false;
+  const apiKey = true; // API key lives in server.js
+
+  // Iniciar sesión automáticamente al cargar
+  window.onload = function() {
+    document.getElementById('user-input').disabled = false;
+    document.getElementById('send-btn').disabled = false;
+    const emptyState = document.getElementById('empty-state');
+    if (emptyState) emptyState.remove();
+    addMessage('patient', 'Buenos días, doctor(a). Ya me pueden atender, por favor.');
+    document.getElementById('user-input').focus();
+  };
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  function addMessage(role, text) {
+    const msgs = document.getElementById('messages');
+    const emptyState = document.getElementById('empty-state');
+    if (emptyState) emptyState.remove();
+
+    const div = document.createElement('div');
+
+    const isSystem = text.includes('───') || text.includes('[SESIÓN');
+    if (isSystem) {
+      div.className = 'msg system-msg';
+      div.innerHTML = `
+        <div class="msg-avatar">⚕️</div>
+        <div class="msg-bubble">${text}</div>`;
+    } else if (role === 'assistant') {
+      div.className = 'msg patient';
+      div.innerHTML = `
+        <div class="msg-avatar">👴</div>
+        <div class="msg-bubble">${text}</div>`;
+    } else {
+      div.className = 'msg user';
+      div.innerHTML = `
+        <div class="msg-bubble">${text}</div>
+        <div class="msg-avatar">👨‍⚕️</div>`;
+    }
+
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg patient';
+    div.id = 'typing';
+    div.innerHTML = `
+      <div class="msg-avatar">👴</div>
+      <div class="msg-bubble">
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typing');
+    if (t) t.remove();
+  }
+
+  async function sendMessage() {
+    if (isLoading) return;
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    addMessage('user', text);
+    conversationHistory.push({ role: 'user', content: text });
+
+    isLoading = true;
+    document.getElementById('send-btn').disabled = true;
+    showTyping();
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: conversationHistory
+        })
+      });
+
+      const data = await response.json();
+      removeTyping();
+
+      if (data.error) {
+        addMessage('assistant', '⚠️ Error: ' + data.error);
+      } else {
+        addMessage('assistant', data.content);
+        conversationHistory.push({ role: 'assistant', content: data.content });
+      }
+    } catch (err) {
+      removeTyping();
+      addMessage('assistant', '⚠️ Error de conexión. Verifica que el servidor esté activo.');
+    }
+
+    isLoading = false;
+    document.getElementById('send-btn').disabled = false;
+    input.focus();
+  }
+
+  function newSession() {
+    if (!confirm('¿Reiniciar la sesión? Se perderá el historial actual.')) return;
+    conversationHistory = [];
+    const msgs = document.getElementById('messages');
+    msgs.innerHTML = '';
+    addMessage('patient', 'Buenos días, doctor(a). Ya me pueden atender, por favor.');
+  }
+
+  // ── Toggle collapsible sections ──
+  function toggleSection(bodyId, chevronId) {
+    const body = document.getElementById(bodyId);
+    const chevron = document.getElementById(chevronId);
+    body.classList.toggle('open');
+    chevron.classList.toggle('open');
+  }
+
+  // ── Add row to treatment table ──
+  function addRxRow() {
+    const tbody = document.getElementById('rx-tbody');
+    const tr = document.createElement('tr');
+    const placeholders = [
+      'ej. Metilprednisolona', 'ej. IV', 'ej. Ampolleta 500 mg',
+      'ej. 1 g', 'ej. Cada 24 h', 'ej. 3 días'
+    ];
+    placeholders.forEach(ph => {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = ph;
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+    tr.querySelector('input').focus();
+  }
+
+  // ══════════════════════════════════════════
+  // RETROALIMENTACIÓN — lógica de desbloqueo
+  // ══════════════════════════════════════════
+
+  const PAN_GUIDELINES = `
+GUÍA ACR/VASCULITIS FOUNDATION 2021 — MANEJO DE POLIARTERITIS NODOSA (PAN)
+
+DIAGNÓSTICO:
+- Rec. 1: Se recomienda imagen vascular abdominal para confirmar diagnóstico y extensión.
+- Rec. 3: En afección cutánea, biopsia profunda de piel (hasta vasos de mediano calibre) sobre punch superficial.
+- Rec. 4: En neuropatía periférica, biopsia combinada de nervio+músculo sobre nervio solo.
+- Rec. 5: En neuropatía motora, seguimiento con examen neurológico seriado (no EMG repetido si estable).
+
+TRATAMIENTO — ENFERMEDAD ACTIVA SEVERA:
+- Rec. 6: Glucocorticoides IV en pulso (metilprednisolona 500–1000 mg/día × 3–5 días) sobre glucocorticoides orales a dosis alta.
+- Rec. 7: Ciclofosfamida + glucocorticoides a dosis alta sobre glucocorticoides solos.
+- Rec. 8: Ciclofosfamida preferida sobre rituximab (evidencia insuficiente para rituximab en PAN).
+- Rec. 9: Si intolerancia a ciclofosfamida: otro inmunosupresor no-GC (AZA, MTX) + GC sobre GC solo.
+- Rec. 11: NO se recomienda plasmaféresis en combinación con CYC+GC (evidencia muy baja).
+
+TRATAMIENTO — ENFERMEDAD ACTIVA NO SEVERA:
+- Rec. 10: Inmunosupresor no-GC + GC sobre GC solo (AZA o MTX en mayoría de casos).
+
+MANTENIMIENTO DE REMISIÓN:
+- Rec. 12: Suspender inmunosupresor no-GC tras 18 meses en remisión sostenida.
+- Rec. 14: Tras remisión con ciclofosfamida, transicionar a agente menos tóxico (AZA o MTX).
+- Pos. Statement A: Duración de GC no estandarizada; guiarse por condición clínica y preferencias del paciente.
+
+ENFERMEDAD REFRACTARIA:
+- Rec. 13: Si severa y refractaria a no-GC distintos de CYC: cambiar a ciclofosfamida sobre aumentar GC solo.
+
+OTRAS CONSIDERACIONES:
+- Rec. 15: Fisioterapia en afección de nervio y/o músculo.
+- Rec. 16 (FUERTE): En DADA2, inhibidores de TNF-alfa sobre GC solo.
+
+DEFINICIONES CLAVE:
+- Severa: vasculitis con manifestaciones que amenazan vida/órgano (insuficiencia renal, mononeuritis múltiple, isquemia mesentérica, isquemia de dígitos).
+- No severa: síntomas sistémicos leves, enfermedad cutánea no complicada, artritis inflamatoria leve.
+- Remisión: ausencia de signos/síntomas atribuibles a PAN.
+`;
+
+  document.getElementById('feedback-section').classList.add('visible');
+
+  function countWords(str) {
+    return str.trim().split(/\s+/).filter(w => w.length > 0).length;
+  }
+
+  function getRxRows() {
+    const inputs = document.querySelectorAll('#rx-tbody tr td:first-child input');
+    return Array.from(inputs).filter(i => i.value.trim() !== '');
+  }
+
+  function checkUnlock() {
+    const dx    = (document.getElementById('dx-answer')?.value || '').trim();
+    const just  = (document.getElementById('dx-justification')?.value || '').trim();
+    const words = countWords(just);
+    const rxOk  = getRxRows().length > 0;
+
+    const dxOk   = dx.length > 0;
+    const justOk = words >= 150;
+
+    // Update checklist indicators
+    const setChk = (id, ok, label) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = ok
+        ? `<span class="lock-check">✓</span> ${label}`
+        : `<span class="lock-pending">○</span> ${label}`;
+    };
+    setChk('chk-dx',   dxOk,   'Diagnóstico probable');
+    setChk('chk-just', justOk, `Justificación clínica (${words}/150 palabras)`);
+    setChk('chk-rx',   rxOk,   'Al menos un fármaco en el plan terapéutico');
+
+    const allOk = dxOk && justOk && rxOk;
+    document.getElementById('feedback-locked').style.display = allOk ? 'none' : 'block';
+    document.getElementById('feedback-ready').style.display  = allOk ? 'block' : 'none';
+  }
+
+  // Watch inputs for changes
+  document.addEventListener('input', function(e) {
+    const targets = ['dx-answer', 'dx-justification'];
+    if (targets.includes(e.target.id)) checkUnlock();
+    if (e.target.closest('#rx-tbody')) checkUnlock();
+  });
+
+  // Initial check
+  checkUnlock();
+
+  // ══════════════════════════════════════════
+  // GENERAR RETROALIMENTACIÓN CON IA
+  // ══════════════════════════════════════════
+  async function generateFeedback() {
+    const btn = document.getElementById('btn-generate-feedback');
+    const output = document.getElementById('feedback-output');
+    const typing = document.getElementById('fb-typing-indicator');
+    const content = document.getElementById('fb-content');
+
+    // Collect student data
+    const dxAnswer = document.getElementById('dx-answer').value.trim();
+    const dxJust   = document.getElementById('dx-justification').value.trim();
+
+    const rxRows = [];
+    document.querySelectorAll('#rx-tbody tr').forEach(tr => {
+      const cells = tr.querySelectorAll('td input');
+      if (cells.length && cells[0].value.trim()) {
+        rxRows.push({
+          compuesto: cells[0]?.value || '',
+          via:       cells[1]?.value || '',
+          presentacion: cells[2]?.value || '',
+          dosis:     cells[3]?.value || '',
+          horario:   cells[4]?.value || '',
+          duracion:  cells[5]?.value || ''
+        });
+      }
+    });
+
+    const chatHistory = conversationHistory.map(m =>
+      `[${m.role === 'user' ? 'ALUMNO' : 'PACIENTE'}]: ${m.content}`
+    ).join('\n');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Generando…';
+    output.classList.add('visible');
+    typing.style.display = 'flex';
+    content.innerHTML = '';
+
+    const prompt = `Eres un docente de medicina clínica evaluando el desempeño de un alumno de pregrado en una práctica de historia clínica con un paciente virtual (Don Aurelio Ríos, 84 años, con isquemia digital e inflamación sistémica compatible con vasculitis de mediano vaso / posible PAN).
+
+HISTORIAL DE LA ENTREVISTA:
+${chatHistory || '(No disponible)'}
+
+DIAGNÓSTICO PROPUESTO POR EL ALUMNO:
+${dxAnswer}
+
+JUSTIFICACIÓN CLÍNICA DEL ALUMNO:
+${dxJust}
+
+PLAN TERAPÉUTICO PROPUESTO:
+${rxRows.map((r,i) => `${i+1}. ${r.compuesto} | ${r.via} | ${r.presentacion} | ${r.dosis} | ${r.horario} | ${r.duracion}`).join('\n')}
+
+GUÍA DE REFERENCIA (ACR/VF 2021 — PAN):
+${PAN_GUIDELINES}
+
+Genera una retroalimentación estructurada en HTML interno (solo etiquetas básicas: <p>, <ul>, <li>, <strong>, sin <html>/<body>/<style>) con EXACTAMENTE estas 4 secciones, cada una envuelta en <div class="fb-block [clase]">:
+
+1. <div class="fb-block case-summary"> — título "📄 Resumen del caso clínico"
+   Sintetiza los hallazgos clave: síntomas, exploración física, laboratorios relevantes y el diagnóstico más probable con su justificación clínica (vasculitis de mediano vaso / PAN vs diferenciales). 3-4 párrafos concisos.
+
+2. <div class="fb-block dx-feedback"> — título "🔍 Evaluación del diagnóstico del alumno"
+   Comenta si el diagnóstico propuesto es correcto, parcialmente correcto o incorrecto. Señala aciertos y omisiones en la justificación. Sé constructivo y específico.
+
+3. <div class="fb-block rx-feedback"> — título "💊 Evaluación del plan terapéutico"
+   Evalúa cada fármaco propuesto: ¿es adecuado para este caso? ¿la vía, dosis y duración son correctas? Señala fármacos faltantes o inapropiados. Sé específico y didáctico.
+
+4. <div class="fb-block guidelines"> — título "📚 Guía ACR/VF 2021 — Puntos clave para este caso"
+   Resume las recomendaciones más relevantes de la guía aplicables a este paciente (severidad de la enfermedad, tratamiento de inducción, mantenimiento). Incluye nivel de evidencia cuando sea pertinente.
+
+Dentro de cada bloque, incluye un <div class="fb-block-title"> con el título. Usa lenguaje claro, académico y empático. No uses markdown, solo HTML básico.`;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }],
+          system_override: 'Eres un docente de medicina clínica experto en vasculitis. Responde ÚNICAMENTE con HTML estructurado según las instrucciones. Sin texto introductorio ni explicaciones fuera del HTML.'
+        })
+      });
+
+      const data = await response.json();
+      typing.style.display = 'none';
+
+      if (data.error) {
+        content.innerHTML = `<div class="fb-block"><p>⚠️ Error al generar retroalimentación: ${data.error}</p></div>`;
+      } else {
+        content.innerHTML = data.content;
+        // Scroll to feedback
+        document.getElementById('feedback-ready').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch(err) {
+      typing.style.display = 'none';
+      content.innerHTML = '<div class="fb-block"><p>⚠️ Error de conexión. Verifica que el servidor esté activo.</p></div>';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span>🔄</span> Regenerar retroalimentación';
+  }
+
+</script>
+</body>
+</html>
